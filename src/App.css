@@ -1,0 +1,7 @@
+.banner{
+  height: 100vh;
+  background-image: url('./assets/bg.webp');
+  background-size: cover;
+  background-position: center;
+  padding-top: 2em;
+}
