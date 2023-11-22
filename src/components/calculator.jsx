@@ -57,8 +57,6 @@ export function FormCalculator() {
           meridian = 0
         }
         changeMeridian = true
-      }else if(totalMinute >= 780){
-        totalMinute = 60 - (totalMinute - 720)
       }
       if(totalMinute >= 720){
         if(meridian == 0 && changeMeridian == false){
@@ -70,7 +68,7 @@ export function FormCalculator() {
       }
       let newhour = Math.trunc(totalMinute / 60)
       let newMinute = totalMinute - (newhour * 60)
-      newhour < 10 ? newhour = `0${newhour}`: newhour
+      newhour < 10 ? newhour = `0${newhour}`: newhour >= 13? newhour = newhour - 12: newhour
       newMinute < 0? newMinute = newMinute*-1: newMinute
       newMinute < 10? newMinute = `0${newMinute}`: newMinute
       bedTimeArray.push(`${parseInt(newhour) == 0 ? '01': newhour}:${newMinute} ${meridianTime[meridian]}`)
