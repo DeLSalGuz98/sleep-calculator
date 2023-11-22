@@ -1,5 +1,6 @@
 .banner{
-  height: 90vh;
+  height: max-content;
+  min-height: 90vh;
   background-image: url('./assets/bg.webp');
   background-size: cover;
   background-position: center;

@@ -1,6 +1,6 @@
 export function Navbar() {
   return(
-    <nav className="navbar navbar-expand-lg bg-primary px-5" data-bs-theme="dark">
+    <nav className="navbar navbar-expand-lg bg-primary" style={{position: "relative"}} data-bs-theme="dark">
       <div className="container-fluid">
         <a className="navbar-brand" href="#"> <i className="bi bi-cloud-moon-fill"></i> Sleep Calculator App</a>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">

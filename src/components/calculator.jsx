@@ -7,88 +7,38 @@ export function FormCalculator() {
   const [minutes, setMinutes] = useState([])
   const meridianTime = ['a.m.','p.m.']
   const [time, setTime] = useState({
-    'hour':'00',
+    'hour':'01',
     'minute':'00',
     'meridian':'a.m.'
   })
+  const [hourToSleep, setHourToSleep] = useState([])
+  const [message, setMessage] = useState('')
 //30, 1:30, 3, 4:30, 6, 7:30  
   useEffect(()=>{
-    setHours(getNumbers(13))
+    setHours(getNumbers(12))
     setMinutes(getNumbers(60))
   },[])
   const getNumbers = (number)=>{
     const newArray = []
     for (let i = 0; i < number; i++) {
-      newArray.push(i) 
+      let number = i<10?`0${i}`: i
+      newArray.push(number) 
     }
     return newArray
   }
   const onChange = (e)=>{
     const {name, value} = e.target
     setTime({...time, [name]:value})
-    console.log(time)
   }
   const bedTime = ()=>{
-    const time = calculateTime('res')
-    console.log(time)
-    // console.log(time)
-    // const minArray = [30, 90, 180, 270, 360, 450]
-    // const [h,m] = [parseInt(time.hour), parseInt(time.minute)]
-    // let meridian = meridianTime.findIndex(m=>m==time.meridian)
-    // let changeMeridian = false
-    // console.log(meridian)
-    // const bedTimeArray = []
-    // //6:19 - 30 => (60*6)+19 - 30 => 379 -30 => 349 => 349/60 => 5 * 60 =300 - 349
-    // for (let i = 0; i < minArray.length; i++) {
-    //   let totalMinute = (h*60) + m
-    //   totalMinute = totalMinute - minArray[i]
-    //   if(totalMinute <= 0){
-    //     totalMinute = (12*60) - (totalMinute * -1)
-    //     if(meridian == 0 && changeMeridian == false){
-    //       meridian = 1
-    //     }else if(meridian == 1  && changeMeridian == false){
-    //       meridian = 0
-    //     }
-    //     changeMeridian = true
-    //   }
-    //   let newhour = Math.trunc(totalMinute / 60)
-    //   let newMinute = totalMinute - (newhour * 60)
-    //   newhour < 10 ? newhour = `0${newhour}`: newhour
-    //   newMinute < 10? newMinute = `0${newMinute}`: newMinute
-    //   bedTimeArray.push(`${parseInt(newhour) == 0 ? '01': newhour}:${newMinute} ${meridianTime[meridian]}`)
-    // } 
-    // console.log(bedTimeArray) 
+    const timeArray = calculateTime('res')
+    setHourToSleep(timeArray)
+    setMessage(`Si quieres despertar ${time.hour}:${time.minute} ${time.meridian}, se recomienda acostarse a dormir:`)
   }
   const wakeUpTime = ()=>{
-    const time = calculateTime('sum')
-    console.log(time)
-    // console.log(time)
-    // const minArray = [30, 90, 180, 270, 360, 450]
-    // const [h,m] = [parseInt(time.hour), parseInt(time.minute)]
-    // let meridian = meridianTime.findIndex(m=>m==time.meridian)
-    // let changeMeridian = false
-    // console.log(meridian)
-    // const bedTimeArray = []
-    // //6:19 - 30 => (60*6)+19 - 30 => 379 -30 => 349 => 349/60 => 5 * 60 =300 - 349
-    // for (let i = 0; i < minArray.length; i++) {
-    //   let totalMinute = (h*60) + m
-    //   totalMinute = totalMinute + minArray[i]
-    //   if(totalMinute <= 0){
-    //     totalMinute = (12*60) - (totalMinute * -1)
-    //     if(meridian == 0 && changeMeridian == false){
-    //       meridian = 1
-    //     }else if(meridian == 1  && changeMeridian == false){
-    //       meridian = 0
-    //     }
-    //     changeMeridian = true
-    //   }
-    //   let newhour = Math.trunc(totalMinute / 60)
-    //   let newMinute = totalMinute - (newhour * 60)
-    //   newhour < 10 ? newhour = `0${newhour}`: newhour
-    //   newMinute < 10? newMinute = `0${newMinute}`: newMinute
-    //   bedTimeArray.push(`${parseInt(newhour) == 0 ? '01': newhour}:${newMinute} ${meridianTime[meridian]}`)
-    // } 
-    // console.log(bedTimeArray) 
+    const timeArray = calculateTime('sum')
+    setHourToSleep(timeArray)
+    setMessage(`Si quieres domir ${time.hour}:${time.minute} ${time.meridian}, se recomienda despertarse:`)
   }
   const calculateTime = (operation)=>{
     const minArray = [30, 90, 180, 270, 360, 450]
@@ -98,9 +48,19 @@ export function FormCalculator() {
     const bedTimeArray = []
     for (let i = 0; i < minArray.length; i++) {
       let totalMinute = (h*60) + m
-      operation == 'sum'?totalMinute = totalMinute + minArray[i]:totalMinute = totalMinute - minArray[i]
+      operation == 'sum'?totalMinute = totalMinute + minArray[i] + 15:totalMinute = totalMinute - minArray[i]-15
       if(totalMinute <= 0){
         totalMinute = (12*60) - (totalMinute * -1)
+        if(meridian == 0 && changeMeridian == false){
+          meridian = 1
+        }else if(meridian == 1  && changeMeridian == false){
+          meridian = 0
+        }
+        changeMeridian = true
+      }else if(totalMinute >= 780){
+        totalMinute = 60 - (totalMinute - 720)
+      }
+      if(totalMinute >= 720){
         if(meridian == 0 && changeMeridian == false){
           meridian = 1
         }else if(meridian == 1  && changeMeridian == false){
@@ -111,11 +71,12 @@ export function FormCalculator() {
       let newhour = Math.trunc(totalMinute / 60)
       let newMinute = totalMinute - (newhour * 60)
       newhour < 10 ? newhour = `0${newhour}`: newhour
+      newMinute < 0? newMinute = newMinute*-1: newMinute
       newMinute < 10? newMinute = `0${newMinute}`: newMinute
       bedTimeArray.push(`${parseInt(newhour) == 0 ? '01': newhour}:${newMinute} ${meridianTime[meridian]}`)
     } 
     return bedTimeArray 
-  } 
+  }
   return(
     <div className=" col-12 col-lg-8 card border-light px-3 pb-3">
       <div className="card-body">
@@ -125,7 +86,8 @@ export function FormCalculator() {
             <SelectInput title="Hora" name="hour" onChange={onChange} value={time.hour}>
               { 
                 hours.map((hour)=>{
-                  return <option key={hour} value={hour}>{hour}</option>
+                  let text = parseInt(hour)+1 < 10? `0${parseInt(hour)+1}`:parseInt(hour)+1
+                  return (<option key={hour} value={parseInt(hour)+1}>{text}</option>)
                 })  
               }
             </SelectInput>
@@ -146,7 +108,19 @@ export function FormCalculator() {
             <button className="btn btn-lg btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={wakeUpTime}><i className="bi bi-cloud-sun fs-3"></i> Calcular el tiempo para despertar </button>
           </div>
         </form>
-        <Modal/>
+        <Modal>
+          <div>
+            <p className='text-light'>{message}</p>
+            {
+              hourToSleep.map(h=>{
+                return(
+                  <span className="badge text-bg-primary m-1" key={h}>{h}</span>
+                )
+              })
+            }
+            <p className='mt-2 text-info'>Nota: Estos horarios concideran los 15 minutos que una persona tarda en dormirse</p>
+          </div>
+        </Modal>
       </div>
     </div>
   )

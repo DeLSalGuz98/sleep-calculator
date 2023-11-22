@@ -9,9 +9,9 @@ function App() {
   return (
     <>
       <Navbar/>
-      <div className='banner'>
-        <div className='container w-100'>
-          <div className='row justify-content-center px-3'>
+      <div className='banner pt-3'>
+        <div className='container w-100 '>
+          <div className='row justify-content-center align-items-center px-3 pb-3'>
             <FormCalculator/>
           </div>
         </div>
